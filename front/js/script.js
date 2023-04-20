@@ -57,15 +57,13 @@ function displayItems(value) {
     canapeElement.appendChild(nameElement);
     canapeElement.appendChild(descriptionElement);
     canapeElement.appendChild(prixElement);
-    // Ajouter l'article au lien de l'article
-    //  articleLink.appendChild(canapeElement);
+
 
  };
 };
 
 function showItems(value) {
  let showHtml= "";
- console.log(value)
   for (let product of value) {
     
 
@@ -81,10 +79,10 @@ function showItems(value) {
 `;
 // console.dir(showHtml);
 // Utiliser une expression régulière pour supprimer les balises HTML
-// const productText = productHtml.replace(/(<([^>]+)>)/gi, "");
+ const productText = showHtml.replace(/(<([^>]+)>)/gi, "");
 
-// Afficher le contenu sans les balises dans une boîte de dialogue
-// alert(productText);
+// Afficher le contenu sans les balises 
+//  alert(productText);
 
 // Insérer le code HTML dans article
 sectionItems.insertAdjacentHTML('beforeend', showHtml);

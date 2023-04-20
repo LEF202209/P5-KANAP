@@ -1,3 +1,4 @@
+
 // const article = document.querySelector('.article');
 
 // article.addEventListener('click', () => {
@@ -45,7 +46,7 @@ fetch(`http://localhost:3000/api/products/${articleId}`)
 
     const descriptionElement = document.querySelector("#description");
     descriptionElement.textContent = produit.description;
-    
+
      // Récupérer l'élément select
      const select = document.getElementById('colors');
 
@@ -61,9 +62,44 @@ fetch(`http://localhost:3000/api/products/${articleId}`)
         select.appendChild(option);
      }
     alert (produit.colors)
+    changementTitrePage(produit)
+    listenBoutonAjouter(produit,select)
     // divImg.appendChild(imageElement);
   // mettre à jour le contenu des éléments HTML avec les données de l'article
 //   titleElement.textContent = data.title;
 //   contentElement.textContent = data.content;
 //   authorElement.textContent = 'By ' + data.author;
 };
+ 
+function listenBoutonAjouter(produit,select) {
+  const button = document.querySelector("#addToCart");
+  alert("addtocart")
+  button.addEventListener("click", function (event) {
+  event.preventDefault();
+  const colorElement = select.value;
+
+  const quantiteElement = document.querySelector("#quantity").value;
+
+  if (colorElement=="") {
+    alert("Veuillez selectionner une couleur")
+  }else if (quantiteElement<1 || quantiteElement>100) {
+    alert("Veuillez saisir une quantité entre 1 et 100")
+  }else {
+  // Création de l’objet du nouveau produit.
+  const produit = {
+      id: articleId,
+      name: produit.name,
+      color: colorElement,
+      quantity: quantiteElement
+  }
+  // ajoutArticle (produit)
+  }
+ 
+  });
+  
+}
+
+function changementTitrePage(produit){
+  const nouveauTitre = produit.name;
+  document.querySelector("title").textContent = nouveauTitre;
+}
