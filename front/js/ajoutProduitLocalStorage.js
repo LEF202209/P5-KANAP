@@ -1,26 +1,36 @@
 export {ajoutArticle}
 
-function ajoutArticle(produitDansCarte){
-        //création variables pour le produit ajouté
-        const idProduct = produitDansCarte.id;
-        const nameProduct = produitDansCarte.name;
-        const colorProduct = produitDansCarte.color;
-        const quantityProduct = produitDansCarte.quantity;
-        //récurépation local storage en objet JS
-        let tabCarte =JSON.parse(localStorage.getItem("carte"))
-        
-        if (tabCarte != null)  {
-            //insere le produit dans le local storage
-              tabCarte.push(produitDansCarte);
-              localStorage.setItem("carte", JSON.stringify(tabCarte));
-              alert(`L'ajout de ${quantityProduct} ${nameProduct} a été pris en compte`);
-          }
-        else{
-          //sinon creation d'un tableau vide et on injecte l'objet
-          tabCarte = []
-          tabCarte.push(produitDansCarte);
-          localStorage.setItem("carte", JSON.stringify(tabCarte));
-          alert(`L'ajout de ${quantityProduct} ${nameProduct} a été pris en compte`);
-        }  
-}
+function ajoutArticle(nvProduit) {
+  const idProduit = nvProduit.id;
+  const nameProduit = nvProduit.name;
+  const colorProduit = nvProduit.color;
+  const quantityProduit = nvProduit.quantity;
+  let panier = JSON.parse(localStorage.getItem('panier'))
+  if  (panier != null) {
+    let produitExiste = false;
+    for (let i = 0; i < panier.length; i++) {
+      if (panier[i].id === nvProduit.id && panier[i].color === nvProduit.color) {
+        panier[i].quantity = parseInt(panier[i].quantity) + parseInt(nvProduit.quantity);
+        alert("nvelle quantity");
+        alert(panier[i].quantity)
+        produitExiste = true;
+        break;
+      }
+    }
 
+    // Si le produit n'existe pas encore dans le panier, l'ajouter
+    if (!produitExiste) {
+      console.log(nvProduit)
+      panier.push(nvProduit);
+    }
+
+  // Stocker le panier mis à jour dans le stockage local
+  localStorage.setItem('panier', JSON.stringify(panier));
+  alert("produit ajouté au panier");
+}else {
+  panier = []
+  panier.push(nvProduit);
+  localStorage.setItem('panier', JSON.stringify(panier));
+  alert("produit ajouté au panier");
+  }
+}

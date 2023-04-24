@@ -82,7 +82,7 @@ function showItems(value) {
  const productText = showHtml.replace(/(<([^>]+)>)/gi, "");
 
 // Afficher le contenu sans les balises 
-//  alert(productText);
+ // alert(productText);
 
 // Insérer le code HTML dans article
 sectionItems.insertAdjacentHTML('beforeend', showHtml);
