@@ -5,14 +5,13 @@ function ajoutArticle(nvProduit) {
   const nameProduit = nvProduit.name;
   const colorProduit = nvProduit.color;
   const quantityProduit = nvProduit.quantity;
+  // localStorage.clear();
   let panier = JSON.parse(localStorage.getItem('panier'))
   if  (panier != null) {
     let produitExiste = false;
     for (let i = 0; i < panier.length; i++) {
       if (panier[i].id === nvProduit.id && panier[i].color === nvProduit.color) {
         panier[i].quantity = parseInt(panier[i].quantity) + parseInt(nvProduit.quantity);
-        alert("nvelle quantity");
-        alert(panier[i].quantity)
         produitExiste = true;
         break;
       }

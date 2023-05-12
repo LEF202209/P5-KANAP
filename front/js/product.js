@@ -1,8 +1,6 @@
 import { ajoutArticle } from './ajoutProduitLocalStorage.js';
 const urlParams = new URLSearchParams(window.location.search);
 const articleId = urlParams.get('id');
-alert ("articleId");
-alert (articleId);
 
 fetch(`http://localhost:3000/api/products/${articleId}`)
   .then(response => response.json())
@@ -45,7 +43,6 @@ fetch(`http://localhost:3000/api/products/${articleId}`)
         option.text = produit.colors[i]
         select.appendChild(option);
      }
-    alert (produit.colors)
     changementTitrePage(produit)
     listenBoutonAjouter(produit,select)
 };
@@ -70,18 +67,17 @@ function listenBoutonAjouter(produit,select) {
       color: colorElement,
       quantity: quantiteElement
   }
-  // alert("nv produit");
-  // alert(nouveauProduit.id +nouveauProduit.name + nouveauProduit.color + nouveauProduit.quantity );
     ajoutArticle (nouveauProduit);
-    location.href ='cart.html'
-  }
- 
+    // charger une nouvelle page dans la fenêtre courante 
+    window.location.href ='cart.html'
+    //ouvrir la page cart.html dans une nouvelle fenêtre du navigateur 
+    // window.open("cart.html", "_blank");
+  } 
   });
-
 }
 
 function changementTitrePage(produit){
   const nouveauTitre = produit.name;
   document.querySelector("title").textContent = nouveauTitre;
-  alert("en titre page");
+  // alert("en titre page");
 }

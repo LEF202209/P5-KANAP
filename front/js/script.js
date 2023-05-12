@@ -14,7 +14,7 @@ async function getData () {
     })
     .then(function(valeur) {
       console.log(valeur);
-      showItems(valeur);
+      affichageItems(valeur);
     })
     .catch (function(error){
       error='Connexion ratée';
@@ -62,13 +62,13 @@ function displayItems(value) {
  };
 };
 
-function showItems(value) {
- let showHtml= "";
+function affichageItems(value) {
+ let affichageHtml= "";
   for (let product of value) {
     
 
 // Créer le code HTML pour l'article
-    showHtml=  `
+    affichageHtml=  `
     <a href="./product.html?id=${product._id}">
   <article>
     <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -79,12 +79,12 @@ function showItems(value) {
 `;
 // console.dir(showHtml);
 // Utiliser une expression régulière pour supprimer les balises HTML
- const productText = showHtml.replace(/(<([^>]+)>)/gi, "");
+ const productText = affichageHtml.replace(/(<([^>]+)>)/gi, "");
 
 // Afficher le contenu sans les balises 
  // alert(productText);
 
 // Insérer le code HTML dans article
-sectionItems.insertAdjacentHTML('beforeend', showHtml);
+sectionItems.insertAdjacentHTML('beforeend', affichageHtml);
   };
 };
