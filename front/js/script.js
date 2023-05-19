@@ -27,8 +27,7 @@ function displayItems(value) {
 
   for (let product of value) {
     console.log(product);
-    // const article = canapes[i];
-
+   
     // Récupération de l'élément du DOM qui accueillera les fiches
     const sectionFiches = document.querySelector(".items");
     // const articleLink = document.createElement('a');

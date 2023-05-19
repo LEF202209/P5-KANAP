@@ -107,7 +107,15 @@ function updateTotaux(cart) {
     // Afficher les totaux dans les éléments HTML correspondants
     totalQuantityElem.textContent = totalQuantity;
     totalPriceElem.textContent = totalPrice.toFixed(2);  // Arrondir à 2 décimales pour afficher le prix en euros
+  // desactivation du bouton Commander si cumul quantités commandées égal à zéro
+  const orderButton = document.querySelector("#order");
+  if (totalQuantity === 0) {
+    orderButton.disabled = true;
+  } else {
+    orderButton.disabled = false;
   }
+}
+
   
   // Fonction pour mettre à jour les totaux lorsque la quantité d'un article est modifiée
   function onQuantiteChange(event) {

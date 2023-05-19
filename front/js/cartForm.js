@@ -158,13 +158,12 @@ async function envoyerDonneesUtilisateur(contact, ids) {
           products: ids,
       }
    try {
-     alert ("en envoi order");
     // const rawResponse = await fetch(`http://localhost:3000/api/products/order`, {
       const rawResponse = await fetch('http://localhost:3000/api/products/order', {  
     method: "POST",
       headers: {
       'Accept': 'application/json',
-        'Content-Type': 'application/json'
+      'Content-Type': 'application/json'
       },
       body: JSON.stringify(sendFormData),
     });
@@ -173,8 +172,6 @@ async function envoyerDonneesUtilisateur(contact, ids) {
     const data = await rawResponse.json();
     recupereNumCde(data);
   } catch (error) {
-    alert ("error serveur");
-    alert(error);
     console.log(error);
     alert("Une erreur est survenue, merci de revenir plus tard.");
   }
@@ -182,15 +179,12 @@ async function envoyerDonneesUtilisateur(contact, ids) {
 function recupereNumCde(data){
   console.log("données")
   console.log(data);
-  alert("je vais afficher num cde");
-  alert (data.orderId);
-  // location.href ="confirmation.html"+"?orderId="+data.orderId
+  window.location.href = "confirmation.html?orderId="+data.orderId;
 }
 
 
 //récupération des id pour renvoi dans l'objet products
 function idDansCart(cart) {
-  alert("function id dans carte")
     const ids = [];
     cart.forEach((produit) => {
         const id = produit.id;
