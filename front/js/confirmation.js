@@ -1,11 +1,12 @@
 // Récupération de l'orderId dans l'URL //
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(location.search);
 const orderId = urlParams.get('orderId');
-afficherOrderId(orderId)
+displayOrderId(orderId)
+// Réinitialisation localStorage //
 localStorage.clear()
 
 //fonction affichage de l'ordeId sur la page html //
-function afficherOrderId (orderId){
-const orderIdElement = document.getElementById("orderId");
-orderIdElement.textContent = orderId;
+function displayOrderId (orderId){
+    const orderIdElement = document.getElementById("orderId");
+    orderIdElement.textContent = orderId;
 }

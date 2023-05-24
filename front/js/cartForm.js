@@ -7,13 +7,13 @@ const submitBtn = document.querySelector('#order');
 
 // Ajout d'un écouteur d'événements au clic sur le bouton de soumission
 submitBtn.addEventListener('click', function(event) {
-  // Empêcher le formulaire de se soumettre
-  event.preventDefault();
-  soumissionForm(cart, form);
+// Empêcher le formulaire de se soumettre
+event.preventDefault();
+submitForm(cart, form);
   })
 }
 
-function soumissionForm(cart,form)
+function submitForm(cart,form)
 {
   // Récupération des valeurs des champs du formulaire
   const contact = {
@@ -23,14 +23,15 @@ function soumissionForm(cart,form)
     city : form.city.value,
     email : form.email.value,
   }
-// Vérification des valeurs des champs
+// Declaration et initialisation des messages d'erreurs //
   const error = []
   firstNameErrorMsg.textContent='';
   lastNameErrorMsg.textContent='';
   addressErrorMsg.textContent='';
   cityErrorMsg.textContent='';
   emailErrorMsg.textContent='';
- 
+// Vérification des valeurs des champs //
+//Prénom//
   if (contact.firstName === '') {
     const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');  
     firstNameErrorMsg.textContent = 'Veuillez saisir votre prénom.';
@@ -39,7 +40,7 @@ function soumissionForm(cart,form)
     firstNameErrorMsg.textContent = 'Veuillez saisir un prénom valide.';
     error.push("prénom")
   }
-  
+//Nom//  
   if (contact.lastName === '') {
     const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg');
     lastNameErrorMsg.textContent = 'Veuillez saisir votre nom.';
@@ -48,7 +49,7 @@ function soumissionForm(cart,form)
     lastNameErrorMsg.textContent = 'Veuillez saisir un nom valide.';
     error.push("nom"); 
   }
-
+//Adresse//
   if (contact.address === '') {
     const addressErrorMsg = document.querySelector('#addressErrorMsg');
     addressErrorMsg.textContent = 'Veuillez saisir votre adresse.';
@@ -57,7 +58,7 @@ function soumissionForm(cart,form)
     addressErrorMsg.textContent = 'Veuillez saisir une adresse valide.';
     error.push("adresse postale"); 
   }
-
+//Ville//
   if (contact.city === '') {
     const cityErrorMsg = document.querySelector('#cityErrorMsg');
     cityErrorMsg.textContent = 'Veuillez saisir votre ville.';
@@ -67,7 +68,7 @@ function soumissionForm(cart,form)
     cityErrorMsg.textContent = 'Veuillez saisir une ville valide.';
     error.push("ville");
   }
-
+//Adresse mail //
   if (contact.email === '') {
     const emailErrorMsg = document.querySelector('#emailErrorMsg');
     emailErrorMsg.textContent = 'Veuillez saisir votre email.';
@@ -78,24 +79,21 @@ function soumissionForm(cart,form)
     error.push("adresse email");
   }
 
-  // Si une erreur est détectée, arrêter le traitement
-  // Vérifier si le formulaire est valide
-  alert("erreur-longueur");
-  alert(error.length );
+// Si une erreur est détectée, ne pas soumettre le formulaire! //
+// Vérifier si le formulaire est valide //
 if (error.length > 0) {
     console.log(`Le formulaire contient des erreurs : ${error.join(", ")}`); 
     return alert("Erreur de saisie, veuillez vérifier le formulaire!");
 } else {
     // Si tout est correct, soumettre le formulaire
     console.log("envoi serveur");
-    console.log(contact)
-    
-  }
-
+    console.log(contact)  
+}
+    // récupérer l'id des produits//
     const ids= idDansCart(cart);
-    envoyerDonneesUtilisateur(contact, ids);
+    // poster contacts et les ids //
+    sendFormUser(contact, ids);
   }
-
 
 // Fonction utilitaire pour vérifier si une adresse email est valide
 function isValidEmail(email) {
@@ -123,67 +121,36 @@ function isValidCity(city) {
   return cityRegex.test(city);
 }
 
-
-//envoi des donnés utilisateur et id du produit
-// function envoyerDonneesUtilisateur(contact, ids) {
-//     const sendFormData  = {
-//         contact: contact,
-//         products: ids,
-//     }
-//     //conditions de validation du formulaire avant envoi
-//         console.log("envoi serveur");
-//         //requête post au serveur
-//         fetch(`http://localhost:3000/api/products/order`, {
-//             method: "POST",
-//             headers: {
-//                 'Accept': 'application/json',
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(sendFormData),
-//         })
-//         .then((res) => res.json())
-//         .then((data) => recupereNumCde(data))
-//         .catch(() => {
-//             alert("Une erreur est survenue, merci de revenir plus tard.");
-//         })
-//     }
-// //
-
-
-
-
-async function envoyerDonneesUtilisateur(contact, ids) {
+async function sendFormUser(contact, ids) {
       const sendFormData  = {
           contact: contact,
           products: ids,
       }
    try {
-    // const rawResponse = await fetch(`http://localhost:3000/api/products/order`, {
       const rawResponse = await fetch('http://localhost:3000/api/products/order', {  
     method: "POST",
-      headers: {
+    headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
       },
-      body: JSON.stringify(sendFormData),
-    });
-   
-     
+    body: JSON.stringify(sendFormData),
+  });
+      
     const data = await rawResponse.json();
-    recupereNumCde(data);
+    retrieveOrderNumber(data);
   } catch (error) {
     console.log(error);
     alert("Une erreur est survenue, merci de revenir plus tard.");
   }
 }
-function recupereNumCde(data){
+function retrieveOrderNumber(data){
   console.log("données")
   console.log(data);
-  window.location.href = "confirmation.html?orderId="+data.orderId;
+  // redirection vers la page de confirmation //
+  location.href = "confirmation.html?orderId="+data.orderId;
 }
 
-
-//récupération des id pour renvoi dans l'objet products
+//récupération de l'id produits pour renvoi dans l'objet sendFormData //
 function idDansCart(cart) {
     const ids = [];
     cart.forEach((produit) => {

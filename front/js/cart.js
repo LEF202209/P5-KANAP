@@ -6,16 +6,16 @@ const panierDansLocalStorageObj = JSON.parse(panierDansLocalStorage);
 // creation variable panier pour gestion des quantités
 let cart;
 // Fonction pour charger la page
-chargerPage();
+loadPage();
 
-async function chargerPage() {
+async function loadPage() {
     // vérifier si les données ont été trouvées
     if (panierDansLocalStorageObj) {
         //variable panier à l'état de tableau
         cart = []
         //récupération données dans le local storage et sur l'API pour chargement dans le tableau
-        recupererProducts(panierDansLocalStorageObj, cart)
-        updateTotaux(cart) 
+        retrieveProducts(panierDansLocalStorageObj, cart)
+        updateTotals(cart) 
         listenButtonOrder (cart)
     } else {
         //affichage panier vide sur la page
@@ -30,7 +30,7 @@ async function chargerPage() {
 
 
 //récupération des données du localstorage pour insérer dans un tableau 
-async function recupererProducts(panierDansLocalStorageObj, cart) {
+async function retrieveProducts(panierDansLocalStorageObj, cart) {
     // panierDansLocalStorage.sort((a,b)=> a.name.localeCompare(b.name))
 
     for (const itemDansLocalStorage of panierDansLocalStorageObj) {     
@@ -42,13 +42,13 @@ async function recupererProducts(panierDansLocalStorageObj, cart) {
         // priorité donnée aux propriétés de itemDansLocalStorage si pptés en double
         cart.push({...catalogue,...itemDansLocalStorage})
         console.log(cart)
-        afficherItems(itemDansLocalStorage ,catalogue)
+        displayItems(itemDansLocalStorage ,catalogue)
     }
 }
 
 
 //affichage produits sur page html
-function afficherItems(itemDansLocalStorage, catalog) { 
+function displayItems(itemDansLocalStorage, catalog) { 
     
     const sectionItem = document.getElementById("cart__items")
     sectionItem.innerHTML +=
@@ -72,24 +72,22 @@ function afficherItems(itemDansLocalStorage, catalog) {
                 </div>
             </div>
         </article > `
-        changementQuantite(sectionItem,cart)
-        suppressionArticle(cart)
+        changeQuantity(sectionItem,cart)
+        deleteProduct(cart)
 }
 
-function changementQuantite(sectionItem,cart){
+function changeQuantity(sectionItem,cart){
     // Ajouter un écouteur d'événement pour chaque champ de quantité dans l'interface utilisateur
     let quantiteFields = document.querySelectorAll('.itemQuantity');
-    // alert ('en chgt qté');
     for (let field of quantiteFields) {
       field.addEventListener('change', onQuantiteChange);
-    }
-    
-    // Mettre à jour les totaux initiaux au chargement de la page
-    updateTotaux(cart);
+    }    
+    // Mettre à jour les totaux après modification quantité
+    updateTotals(cart);
     }
 
 // Fonction pour mettre à jour les totaux à partir des données du panier
-function updateTotaux(cart) {
+function updateTotals(cart) {
     // Récupérer les éléments HTML correspondant aux totaux
     let totalQuantityElem = document.getElementById('totalQuantity');
     let totalPriceElem = document.getElementById('totalPrice');
@@ -99,9 +97,9 @@ function updateTotaux(cart) {
     let totalPrice = 0;
   
     // Parcourir tous les articles dans le panier et mettre à jour les totaux
-    for (let article of cart) {
-      totalQuantity += Number(article.quantity);
-      totalPrice += article.price * Number(article.quantity);
+    for (let product of cart) {
+      totalQuantity += Number(product.quantity);
+      totalPrice += product.price * Number(product.quantity);
     }
   
     // Afficher les totaux dans les éléments HTML correspondants
@@ -120,68 +118,62 @@ function updateTotaux(cart) {
   // Fonction pour mettre à jour les totaux lorsque la quantité d'un article est modifiée
   function onQuantiteChange(event) {
     // Récupérer l'article correspondant à l'élément HTML qui a déclenché l'événement
-    let articleId = event.target.dataset.id;
-    let articleColor = event.target.dataset.color;
+    let productId = event.target.dataset.id;
+    let productColor = event.target.dataset.color;
     let panier = JSON.parse(localStorage.getItem('panier'));
-    let articleLocalStorage = panier.find(a => a.id === articleId && a.color === articleColor);
-    let articleCart = cart.find(a => a.id === articleId && a.color === articleColor);
+    let productLocalStorage = panier.find(a => a.id === productId && a.color === productColor);
+    let productCart = cart.find(a => a.id === productId && a.color === productColor);
     // Mettre à jour la quantité de l'article dans le panier
-    if (articleLocalStorage){
-        articleLocalStorage.quantity = parseInt(event.target.value);
+    if (productLocalStorage){
+        productLocalStorage.quantity = parseInt(event.target.value);
     }  
 
     // Sauvegarder les données mises à jour dans le localstorage
     localStorage.setItem('panier', JSON.stringify(panier));
    
     // Mettre à jour le tableau cart
-    if (articleCart){
-        articleCart.quantity = parseInt(event.target.value);
+    if (productCart){
+        productCart.quantity = parseInt(event.target.value);
     } 
     // Mettre à jour les totaux
-    updateTotaux(cart);
+    updateTotals(cart);
   }
 
-  function suppressionArticle(cart){
+  function deleteProduct(cart){
     //Récupération de tous les boutons 'Supprimer'
-   const suppressionBtns = document.querySelectorAll('.deleteItem');
-   // Parcours de chaque bouton supprimer
-   suppressionBtns.forEach(function(btn) {
+    const deleteBtns = document.querySelectorAll('.deleteItem');
+    // Parcours de chaque bouton 'supprimer' //
+    // deleteElt contient la ligne HTML à supprimer //
+    deleteBtns.forEach(function(deleteElt) {
     // Ajout d'un écouteur d'événements au clic sur chaque bouton
-    btn.addEventListener('click', trtSupprArticle);
+    deleteElt.addEventListener('click', trtDeleteProduct);
     })
 }
-function trtSupprArticle (event) {
-      // Empêcher le formulaire de se soumettre
-    // event.preventDefault();
-    // Récupération de l'id de l'article à "Supprimer"
 
+function trtDeleteProduct (event) {
+    // Récupération de l'id & de la couleur de l'article à "Supprimer"
     const idToDelete = event.target.dataset.id;
     const colorToDelete = event.target.dataset.color;
 
     // Vérification si l'article existe dans le LocalStorage
-    if (localStorage.getItem('cart')) {
-
-        // Recherche de l'index de l'article à supprimer dans le tableau de données
+    if (localStorage.getItem('panier')) {
+        // Recherche de l'index de l'article à supprimer dans le tableau des données //
         const indexToDelete = cart.findIndex(item => item.id === idToDelete && item.color === colorToDelete);
 
         // Si l'article est trouvé, suppression de l'article du tableau de données
         if (indexToDelete !== -1) {
             cart.splice(indexToDelete, 1);
-
             // Mise à jour des données du panier dans le LocalStorage
             localStorage.setItem('panier', JSON.stringify(cart));
-            // const cart = JSON.parse(localStorage.getItem('panier'));
-            console.log(cart);
-            // Mettre à jour les totaux
-            updateTotaux(cart);
         }
     }
-
     // Récupération de l'élément HTML à supprimer
-    const cartItem = document.querySelector(`[data-id="${idToDelete}"][data-color="${colorToDelete }"]`);
-  
+    const cartItem = document.querySelector(`[data-id="${idToDelete}"][data-color="${colorToDelete }"]`);  
     // Suppression de l'article dans le HTML
     cartItem.closest('.cart__item').remove();
+
+    // Mettre à jour les totaux
+    updateTotals(cart);
      
 }
 
