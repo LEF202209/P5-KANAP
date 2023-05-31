@@ -15,7 +15,7 @@ function getData () {
       displayItems(data);
     })
     .catch (function(err){
-      err='Connexion ratée';
+      err='Catalogue actuellement inaccessible, merci de revenir plus tard.';
       alert(err);
     });
 };
@@ -35,13 +35,7 @@ function displayItems(sofas) {
   </a>
 `;
 
-// Utiliser une expression régulière pour supprimer les balises HTML
-//  const productText = displayHTML.replace(/(<([^>]+)>)/gi, "");
-
-// Afficher le contenu sans les balises 
- // alert(productText);
-
-// Insérer le code HTML dans article
+// Insérer l'article dans l'élément 'items'
 sectionItems.innerHTML += displayHTML;
 // sectionItems.insertAdjacentHTML('beforeend', displayHTML);
   };

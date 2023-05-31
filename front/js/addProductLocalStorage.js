@@ -1,11 +1,7 @@
 export {addProduct}
 
 function addProduct(newProduct) {
-  // const idProduct = newProduct.id;
-  // const nameProduct = newProduct.name;
-  // const colorProduct = newProduct.color;
-  // const quantityProduct = newProduct.quantity;
-  // localStorage.clear();
+  // récupèration de la valeur associée à la clé "panier" dans l'objet localStorage
   let panier = JSON.parse(localStorage.getItem('panier'))
   // si le panier n'est pas vide //
   if  (panier != null) {
@@ -30,5 +26,5 @@ function addProduct(newProduct) {
     }
  // Stocker le panier mis à jour dans le stockage local
   localStorage.setItem('panier', JSON.stringify(panier));
-  alert("produit ajouté au panier");
+  alert("Article ajouté au panier");
 }

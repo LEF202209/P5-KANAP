@@ -1,18 +1,15 @@
 import { addProduct } from './addProductLocalStorage.js';
-// **
-// // Obtenez les paramètres d'URL de la page actuelle
-// const urlSearchParams = new URLSearchParams(window.location.search);
-// // Obtenez la valeur d'un paramètre spécifique
-// const paramValue = urlSearchParams.get('nomParametre');
-//** */
-const urlSearchParams = new URLSearchParams(window.location.search);
+
+// Obtenir les paramètres d'URL de la page actuelle//
+const urlSearchParams = new URLSearchParams(location.search);
+// param Id//
 const productId = urlSearchParams.get('id');
 
 fetch(`http://localhost:3000/api/products/${productId}`)
   .then(response => {return response.json()})
   // afficher les données de l'article récupérées
   .then(data => showData(data)  )
-  .catch(e => {alert('Erreur de récupération canapé');alert (e)});
+  .catch(e => {alert('Erreur de récupération informations canapé');alert (e)});
 
   // fonction affichage d'un canapé //
   function showData(data) {
@@ -43,9 +40,13 @@ fetch(`http://localhost:3000/api/products/${productId}`)
      // initialisation prix du produit
     const priceElement = document.querySelector("#price");
     priceElement.textContent = product.price;
-    // initialisation description du produit
-    const descriptionElement = document.querySelector("#description");
-    descriptionElement.textContent = product.description;
+      // initialisation description du produit
+      const descriptionElement = document.querySelector("#description");
+      descriptionElement.textContent = product.description;
+
+    // initialisation quantité du produit
+    const quantityElement = document.querySelector("#quantity");
+    quantityElement.value = 1;
 
     // Récupérer l'élément select
     const select = document.getElementById('colors');
@@ -59,26 +60,31 @@ fetch(`http://localhost:3000/api/products/${productId}`)
         //Ajout chaque nouvelle option dans l'attribut select //
         select.appendChild(option);
      }
+    // changement titre de la page //
     changeTitlePage(product)
+    // Ecoute clic sur bouton ajouter //
     listenButtonAdd(product,select)
 };
 
 function changeTitlePage(sofa){
   const newTitle = sofa.name;
   document.querySelector("title").textContent = newTitle;
-  // alert("en titre page");
 }
  
 function listenButtonAdd(sofa,select) {
   const button = document.querySelector("#addToCart");
   button.addEventListener("click", function (e) {
+  // annuler l'exécution du lien //
   e.preventDefault();
+  // constante couleur sélectionnée
   const colorValue = select.value;
-
+  // constante quantité saisie
   const quantityValue = document.querySelector("#quantity").value;
 
+ // contrôle saisie couleur //
   if (colorValue=="") {
     alert("Veuillez selectionner une couleur")
+// contrôle saisie quantité //
   }else if (quantityValue<1 || quantityValue>100) {
     alert("Veuillez saisir une quantité entre 1 et 100")
   }else {
@@ -89,7 +95,6 @@ function listenButtonAdd(sofa,select) {
       color: colorValue,
       quantity: quantityValue
       };
-    //
   // ajout objet product (canapé selectionné + couleur + quantité dans le localStorage) //
   addProduct (newProduct);
   // charger une nouvelle page dans la fenêtre courante 

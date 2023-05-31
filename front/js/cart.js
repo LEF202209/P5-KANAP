@@ -3,36 +3,40 @@ import { listenButtonOrder } from './cartForm.js';
 const panierDansLocalStorage = localStorage.getItem("panier");
 // Convertir les données en objet javascript //
 const panierDansLocalStorageObj = JSON.parse(panierDansLocalStorage);
-// creation variable panier pour gestion des quantités
+
+// creation variable panier pour gestion des quantités //
 let cart;
-// Fonction pour charger la page
+// Fonction pour charger la page //
 loadPage();
 
 async function loadPage() {
-    // vérifier si les données ont été trouvées
+    // vérifier si des données ont été trouvées dans le localStorage //
     if (panierDansLocalStorageObj) {
-        //variable panier à l'état de tableau
+        //variable panier à l'état de tableau vide //
         cart = []
-        //récupération données dans le local storage et sur l'API pour chargement dans le tableau
+        // récupération données dans le local storage et sur l'API pour chargement dans le tableau
         retrieveProducts(panierDansLocalStorageObj, cart)
-        updateTotals(cart) 
+        // fonction : calcul des cumul quantités et montant //
+        updateTotals(cart)
+        // fonction : écoute clic bouton 'commander' //  
         listenButtonOrder (cart)
     } else {
-        //affichage panier vide sur la page
+        // affichage panier vide sur la page //
         const panierVide = document.createElement("h2")
-        document.querySelector("#cart__items").appendChild(panierVide)
         panierVide.textContent = "Le panier est vide."
+        document.querySelector("#cart__items").appendChild(panierVide)    
         // marque le formulaire de saisie et le bouton commander
-        // const hideForm = document.querySelector(".cart__order")
-        // hideForm.setAttribute("style","display:none")
+         const UserForm = document.querySelector(".cart__order")
+        UserForm.setAttribute("style","display:none")
     }   
 }
 
-
 //récupération des données du localstorage pour insérer dans un tableau 
 async function retrieveProducts(panierDansLocalStorageObj, cart) {
-    // panierDansLocalStorage.sort((a,b)=> a.name.localeCompare(b.name))
-
+console.log('-----------------------');
+   console.log (panierDansLocalStorageObj);
+    // Tri des produits par ID
+    panierDansLocalStorageObj.sort(comparerParId);
     for (const itemDansLocalStorage of panierDansLocalStorageObj) {     
         const data = await
         // connexion à l'API pour récupérer le catalogue des produits //
@@ -46,6 +50,17 @@ async function retrieveProducts(panierDansLocalStorageObj, cart) {
     }
 }
 
+// Fonction de comparaison pour trier par ID
+function comparerParId(a, b) {
+    if (a.id < b.id) {
+      return -1;
+    }
+    if (a.id > b.id) {
+      return 1;
+    }
+    return 0;
+  }
+  
 
 //affichage produits sur page html
 function displayItems(itemDansLocalStorage, catalog) { 
@@ -171,6 +186,13 @@ function trtDeleteProduct (event) {
     const cartItem = document.querySelector(`[data-id="${idToDelete}"][data-color="${colorToDelete }"]`);  
     // Suppression de l'article dans le HTML
     cartItem.closest('.cart__item').remove();
+    alert("Article supprimé du panier");
+    //si panier vide, effacement du local storage et rafraichissement de la page
+
+    if (cart.length === 0) {
+        localStorage.clear()
+        location.reload()
+    }
 
     // Mettre à jour les totaux
     updateTotals(cart);
