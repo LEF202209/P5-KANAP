@@ -2,13 +2,14 @@ import { addProduct } from './addProductLocalStorage.js';
 
 // Obtenir les paramètres d'URL de la page actuelle//
 const urlSearchParams = new URLSearchParams(location.search);
+
 // param Id//
 const productId = urlSearchParams.get('id');
-
+console.log(productId)
 fetch(`http://localhost:3000/api/products/${productId}`)
   .then(response => {return response.json()})
   // afficher les données de l'article récupérées
-  .then(data => showData(data)  )
+  .then(data => showData(data))
   .catch(e => {alert('Erreur de récupération informations canapé');alert (e)});
 
   // fonction affichage d'un canapé //
@@ -44,7 +45,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
       const descriptionElement = document.querySelector("#description");
       descriptionElement.textContent = product.description;
 
-    // initialisation quantité du produit
+    // initialisation quantité du produit à 1 par défaut
     const quantityElement = document.querySelector("#quantity");
     quantityElement.value = 1;
 
@@ -55,7 +56,6 @@ fetch(`http://localhost:3000/api/products/${productId}`)
         const option = document.createElement('option');
         // option.value = product.colors[i];
         option.text = product.colors[i]
-        console.log(option);
         option.setAttribute('value',product.colors[i]);
         //Ajout chaque nouvelle option dans l'attribut select //
         select.appendChild(option);
@@ -97,10 +97,10 @@ function listenButtonAdd(sofa,select) {
       };
   // ajout objet product (canapé selectionné + couleur + quantité dans le localStorage) //
   addProduct (newProduct);
-  // charger une nouvelle page dans la fenêtre courante 
+  // charger une nouvelle page 'Panier' dans la fenêtre courante 
   location.href ='cart.html'
   //ouvrir la page cart.html dans une nouvelle fenêtre du navigateur 
-  // window.open("cart.html", "_blank");
+  //window.open("cart.html", "_blank");
   } 
   });
 }

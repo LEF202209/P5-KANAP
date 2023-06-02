@@ -1,8 +1,8 @@
 import { listenButtonOrder } from './cartForm.js';
 // Récupérer les données du localStorage //
-const panierDansLocalStorage = localStorage.getItem("panier");
+const panierInLocalStorage = localStorage.getItem("panier");
 // Convertir les données en objet javascript //
-const panierDansLocalStorageObj = JSON.parse(panierDansLocalStorage);
+const panierInLocalStorageObj = JSON.parse(panierInLocalStorage);
 
 // creation variable panier pour gestion des quantités //
 let cart;
@@ -11,11 +11,11 @@ loadPage();
 
 async function loadPage() {
     // vérifier si des données ont été trouvées dans le localStorage //
-    if (panierDansLocalStorageObj) {
+    if (panierInLocalStorageObj) {
         //variable panier à l'état de tableau vide //
         cart = []
         // récupération données dans le local storage et sur l'API pour chargement dans le tableau
-        retrieveProducts(panierDansLocalStorageObj, cart)
+        retrieveProducts(panierInLocalStorageObj, cart)
         // fonction : calcul des cumul quantités et montant //
         updateTotals(cart)
         // fonction : écoute clic bouton 'commander' //  
@@ -32,26 +32,24 @@ async function loadPage() {
 }
 
 //récupération des données du localstorage pour insérer dans un tableau 
-async function retrieveProducts(panierDansLocalStorageObj, cart) {
-console.log('-----------------------');
-   console.log (panierDansLocalStorageObj);
+async function retrieveProducts(panierInLocalStorageObj, cart) {
     // Tri des produits par ID
-    panierDansLocalStorageObj.sort(comparerParId);
-    for (const itemDansLocalStorage of panierDansLocalStorageObj) {     
+    panierInLocalStorageObj.sort(compareById);
+    for (const itemInLocalStorage of panierInLocalStorageObj) {     
         const data = await
         // connexion à l'API pour récupérer le catalogue des produits //
-        fetch(`http://localhost:3000/api/products/${itemDansLocalStorage.id}`)
+        fetch(`http://localhost:3000/api/products/${itemInLocalStorage.id}`)
         const catalogue = await data.json()
         //injecte les données du local storage et complète les infos manquantes depuis l'api
         // priorité donnée aux propriétés de itemDansLocalStorage si pptés en double
-        cart.push({...catalogue,...itemDansLocalStorage})
+        cart.push({...catalogue,...itemInLocalStorage})
         console.log(cart)
-        displayItems(itemDansLocalStorage ,catalogue)
+        displayItems(itemInLocalStorage ,catalogue)
     }
 }
 
 // Fonction de comparaison pour trier par ID
-function comparerParId(a, b) {
+function compareById(a, b) {
     if (a.id < b.id) {
       return -1;
     }
@@ -63,27 +61,27 @@ function comparerParId(a, b) {
   
 
 //affichage produits sur page html
-function displayItems(itemDansLocalStorage, catalog) { 
+function displayItems(itemInLocalStorage, catalog) { 
     
     const sectionItem = document.getElementById("cart__items")
     sectionItem.innerHTML +=
-        `<article class="cart__item" data-id="${itemDansLocalStorage.id}" data-color="${itemDansLocalStorage.color}">
+        `<article class="cart__item" data-id="${itemInLocalStorage.id}" data-color="${itemInLocalStorage.color}">
             <div class="cart__item__img">
                 <img src="${catalog.imageUrl}" alt="${catalog.altTxt}">
             </div >
             <div class="cart__item__content">
                 <div class="cart__item__content__description">
                     <h2>${catalog.name}</h2>
-                     <p>${itemDansLocalStorage.color}</p>
+                     <p>${itemInLocalStorage.color}</p>
                     <p>${catalog.price} €</p>
                 </div>
                 <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                     <p>Qté : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${itemDansLocalStorage.quantity}" data-color="${itemDansLocalStorage.color}" data-id="${itemDansLocalStorage.id}">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${itemInLocalStorage.quantity}" data-color="${itemInLocalStorage.color}" data-id="${itemInLocalStorage.id}">
                 </div>
                 <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem" data-id="${itemDansLocalStorage.id}" data-color="${itemDansLocalStorage.color}" >Supprimer </p>
+                    <p class="deleteItem" data-id="${itemInLocalStorage.id}" data-color="${itemInLocalStorage.color}" >Supprimer </p>
                 </div>
             </div>
         </article > `
@@ -138,20 +136,29 @@ function updateTotals(cart) {
     let panier = JSON.parse(localStorage.getItem('panier'));
     let productLocalStorage = panier.find(a => a.id === productId && a.color === productColor);
     let productCart = cart.find(a => a.id === productId && a.color === productColor);
-    // Mettre à jour la quantité de l'article dans le panier
-    if (productLocalStorage){
-        productLocalStorage.quantity = parseInt(event.target.value);
-    }  
-
-    // Sauvegarder les données mises à jour dans le localstorage
-    localStorage.setItem('panier', JSON.stringify(panier));
-   
-    // Mettre à jour le tableau cart
-    if (productCart){
-        productCart.quantity = parseInt(event.target.value);
-    } 
-    // Mettre à jour les totaux
-    updateTotals(cart);
+    // Contrôle quantité
+    let newQuantity = parseInt(event.target.value);
+    // Vérifier que la quantité est entre 0 et 100
+    if (!(newQuantity >= 0 && newQuantity <= 100)) { 
+        alert("La quantité doit être comprise entre 0 et 100");
+        // Réinitialiser la valeur de l'input à la valeur actuelle dans le panier
+        event.target.value = productLocalStorage.quantity;
+    } else {
+        // Mettre à jour la quantité de l'article dans le panier
+        if (productLocalStorage){
+            let newQuantity = parseInt(event.target.value);
+            // Vérifier que la quantité est entre 0 et 100
+                productLocalStorage.quantity = newQuantity;
+                // Sauvegarder les données mises à jour dans le localstorage
+                localStorage.setItem('panier', JSON.stringify(panier));
+            }  
+        // Mettre à jour le tableau cart
+        if (productCart){
+            productCart.quantity= newQuantity;
+        } 
+        // Mettre à jour les totaux
+        updateTotals(cart);
+    }
   }
 
   function deleteProduct(cart){
@@ -195,7 +202,5 @@ function trtDeleteProduct (event) {
     }
 
     // Mettre à jour les totaux
-    updateTotals(cart);
-     
+    updateTotals(cart);     
 }
-

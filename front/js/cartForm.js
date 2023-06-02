@@ -9,6 +9,7 @@ const submitBtn = document.querySelector('#order');
 submitBtn.addEventListener('click', function(event) {
 // Empêcher le formulaire de se soumettre
 event.preventDefault();
+// Envoi données (produits sélectionnées + formulaire)
 submitForm(cart, form);
   })
 }
@@ -117,7 +118,7 @@ function isValidAddress(address) {
 
 // Fonction utilitaire pour vérifier si une ville est valide
 function isValidCity(city) {
-  const cityRegex = /^[A-Z a-z\s_-àâçéèêëîïôûùüÿñæœ']{2,50}$/;
+  const cityRegex = /^[A-Z a-z\s_-àâçéèêëîïôûùüÿñæœ']{1,50}$/;
   return cityRegex.test(city);
 }
 
