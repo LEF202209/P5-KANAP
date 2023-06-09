@@ -41,30 +41,35 @@ fetch(`http://localhost:3000/api/products/${productId}`)
      // initialisation prix du produit
     const priceElement = document.querySelector("#price");
     priceElement.textContent = product.price;
-      // initialisation description du produit
-      const descriptionElement = document.querySelector("#description");
-      descriptionElement.textContent = product.description;
+    // initialisation description du produit
+    const descriptionElement = document.querySelector("#description");
+    descriptionElement.textContent = product.description;
 
     // initialisation quantité du produit à 1 par défaut
     const quantityElement = document.querySelector("#quantity");
     quantityElement.value = 1;
-
-    // Récupérer l'élément select
+    // Initialisation des options select
     const select = document.getElementById('colors');
-    // bouble de lecture et récupération des couleurs
-    for (let i = 0; i < product.colors.length; i++) {
-        const option = document.createElement('option');
-        // option.value = product.colors[i];
-        option.text = product.colors[i]
-        option.setAttribute('value',product.colors[i]);
-        //Ajout chaque nouvelle option dans l'attribut select //
-        select.appendChild(option);
-     }
+    // Récupérer l'élément select
+    selectColorsList(product,select)
     // changement titre de la page //
     changeTitlePage(product)
     // Ecoute clic sur bouton ajouter //
     listenButtonAdd(product,select)
 };
+
+function selectColorsList(sofa,select){
+    // bouble de lecture et récupération des couleurs
+    for (let i = 0; i < sofa.colors.length; i++) {
+        const option = document.createElement('option');
+        // option.value = product.colors[i];
+        option.text = sofa.colors[i]
+        option.setAttribute('value',sofa.colors[i]);
+        //Ajout chaque nouvelle option dans l'attribut select //
+        select.appendChild(option);
+     }
+     return select;
+}
 
 function changeTitlePage(sofa){
   const newTitle = sofa.name;

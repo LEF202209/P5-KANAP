@@ -118,13 +118,13 @@ function updateTotals(cart) {
     // Afficher les totaux dans les éléments HTML correspondants
     totalQuantityElem.textContent = totalQuantity;
     totalPriceElem.textContent = totalPrice.toFixed(2);  // Arrondir à 2 décimales pour afficher le prix en euros
-  // desactivation du bouton Commander si cumul quantités commandées égal à zéro
-  const orderButton = document.querySelector("#order");
-  if (totalQuantity === 0) {
-    orderButton.disabled = true;
-  } else {
-    orderButton.disabled = false;
-  }
+//   // desactivation du bouton Commander si cumul quantités commandées égal à zéro
+//   const orderButton = document.querySelector("#order");
+//   if (totalQuantity === 0) {
+//     orderButton.disabled = true;
+//   } else {
+//     orderButton.disabled = false;
+//   }
 }
 
   
@@ -137,10 +137,11 @@ function updateTotals(cart) {
     let productLocalStorage = panier.find(a => a.id === productId && a.color === productColor);
     let productCart = cart.find(a => a.id === productId && a.color === productColor);
     // Contrôle quantité
+  
     let newQuantity = parseInt(event.target.value);
     // Vérifier que la quantité est entre 0 et 100
-    if (!(newQuantity >= 0 && newQuantity <= 100)) { 
-        alert("La quantité doit être comprise entre 0 et 100");
+    if (!(newQuantity > 0 && newQuantity <= 100)) { 
+        alert("La quantité doit être comprise entre 0 et 100, la quantité retenue est : "+productLocalStorage.quantity);
         // Réinitialiser la valeur de l'input à la valeur actuelle dans le panier
         event.target.value = productLocalStorage.quantity;
     } else {
