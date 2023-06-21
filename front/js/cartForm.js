@@ -155,7 +155,7 @@ function retrieveOrderNumber(data){
 function idDansCart(cart) {
     const ids = [];
     cart.forEach((produit) => {
-        const id = produit.name;
+        const id = produit.id;
         ids.push(id)
     })
     return ids
