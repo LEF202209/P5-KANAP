@@ -92,7 +92,7 @@ if (error.length > 0) {
 }
     // récupérer l'id des produits//
     const ids= idDansCart(cart);
-    // poster contacts et les ids //
+    // poster formulaire de contact et les ids //
     sendFormUser(contact, ids);
   }
 
@@ -155,7 +155,7 @@ function retrieveOrderNumber(data){
 function idDansCart(cart) {
     const ids = [];
     cart.forEach((produit) => {
-        const id = produit.id;
+        const id = produit.name;
         ids.push(id)
     })
     return ids

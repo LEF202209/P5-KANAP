@@ -6,12 +6,19 @@ const urlSearchParams = new URLSearchParams(location.search);
 // param Id//
 const productId = urlSearchParams.get('id');
 console.log(productId)
-fetch(`http://localhost:3000/api/products/${productId}`)
+fetchDataProduct(productId)
+
+function fetchDataProduct(idProduct){
+  fetch(`http://localhost:3000/api/products/${idProduct}`)
   .then(response => {return response.json()})
   // afficher les données de l'article récupérées
   .then(data => showData(data))
-  .catch(e => {alert('Erreur de récupération informations canapé');alert (e)});
-
+  .catch(e => {
+    console.log('Erreur de récupération informations canapé');
+    alert('Erreur de récupération informations canapé');
+    alert (e)
+  });
+}
   // fonction affichage d'un canapé //
   function showData(data) {
   // declaration de l'objet canapé //

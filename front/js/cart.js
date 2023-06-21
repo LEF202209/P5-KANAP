@@ -11,9 +11,9 @@ loadPage();
 
 async function loadPage() {
     // vérifier si des données ont été trouvées dans le localStorage //
+     //variable panier à l'état de tableau vide //
+    cart = []
     if (panierInLocalStorageObj) {
-        //variable panier à l'état de tableau vide //
-        cart = []
         // récupération données dans le local storage et sur l'API pour chargement dans le tableau
         retrieveProducts(panierInLocalStorageObj, cart)
         // fonction : calcul des cumul quantités et montant //
@@ -24,8 +24,10 @@ async function loadPage() {
         // affichage panier vide sur la page //
         const panierVide = document.createElement("h2")
         panierVide.textContent = "Le panier est vide."
-        document.querySelector("#cart__items").appendChild(panierVide)    
-        // marque le formulaire de saisie et le bouton commander
+        document.querySelector("#cart__items").appendChild(panierVide) 
+        // fonction : réinitialisation à zéro des totaux quantité et montant //
+        updateTotals(cart)  
+        // ne pas afficher le formulaire de saisie et le bouton commander //
          const UserForm = document.querySelector(".cart__order")
         UserForm.setAttribute("style","display:none")
     }   
@@ -93,7 +95,7 @@ function changeQuantity(sectionItem,cart){
     // Ajouter un écouteur d'événement pour chaque champ de quantité dans l'interface utilisateur
     let quantiteFields = document.querySelectorAll('.itemQuantity');
     for (let field of quantiteFields) {
-      field.addEventListener('change', onQuantiteChange);
+      field.addEventListener('change', onQuantityChange);
     }    
     // Mettre à jour les totaux après modification quantité
     updateTotals(cart);
@@ -129,7 +131,7 @@ function updateTotals(cart) {
 
   
   // Fonction pour mettre à jour les totaux lorsque la quantité d'un article est modifiée
-  function onQuantiteChange(event) {
+  function onQuantityChange(event) {
     // Récupérer l'article correspondant à l'élément HTML qui a déclenché l'événement
     let productId = event.target.dataset.id;
     let productColor = event.target.dataset.color;
