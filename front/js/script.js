@@ -22,21 +22,21 @@ function getData () {
 
 
 function displayItems(sofas) {
- let displayHTML= "";
+  let displayHTML= "";
   for (let sofa of sofas) {
-// Créer le code HTML pour l'affichage de l'article
+  // Créer le code HTML pour l'affichage de l'article
     displayHTML=  `
     <a href="./product.html?id=${sofa._id}">
-  <article>
-    <img src="${sofa.imageUrl}" alt="${sofa.altTxt}">
-    <h3 class='productName'>${sofa.name}</h3>
-    <p class='productDescription'>${sofa.description}</p>
-  </article>
-  </a>
-`;
+    <article>
+      <img src="${sofa.imageUrl}" alt="${sofa.altTxt}">
+      <h3 class='productName'>${sofa.name}</h3>
+      <p class='productDescription'>${sofa.description}</p>
+    </article>
+    </a>
+    `;
 
-// Insérer l'article dans l'élément 'items'
-sectionItems.innerHTML += displayHTML;
-// sectionItems.insertAdjacentHTML('beforeend', displayHTML);
+    // Insérer l'article dans l'élément 'items'
+    sectionItems.innerHTML += displayHTML;
+    // sectionItems.insertAdjacentHTML('beforeend', displayHTML);
   };
 };
