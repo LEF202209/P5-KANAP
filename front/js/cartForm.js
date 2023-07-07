@@ -1,17 +1,19 @@
 export {listenButtonOrder}
 
 function listenButtonOrder(cart) {
-  // Récupération du formulaire et du bouton de soumission
+  // Récupération du formulaire //
   const form = document.querySelector('.cart__order__form');
+  // Ajout d'un écouteur d'événements au clic sur le bouton de soumission //
   const submitBtn = document.querySelector('#order');
-  // Ajout d'un écouteur d'événements au clic sur le bouton de soumission
   submitBtn.addEventListener('click', function(event) {
-    // Empêcher le formulaire de se soumettre
-    event.preventDefault();
-    // Envoi données (produits sélectionnées + formulaire)
-    submitForm(cart, form);
+  // Empêcher le formulaire de se soumettre //
+  event.preventDefault();
+  // Appel à la fonction pour Envoi données (produits sélectionnées+formulaire) au Back End //
+  submitForm(cart, form);
   })
 }
+
+// Fonction pour Envoi des données (produits sélectionnées+formulaire) au Back End //
 function submitForm(cart,form){
   // Récupération des valeurs des champs du formulaire
   const contact = {
@@ -23,56 +25,70 @@ function submitForm(cart,form){
   }
   // Declaration et initialisation des messages d'erreurs //
   const error = []
+  const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');
   firstNameErrorMsg.textContent='';
+  const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg'); 
   lastNameErrorMsg.textContent='';
+  const addressErrorMsg = document.querySelector('#addressErrorMsg');
   addressErrorMsg.textContent='';
+  const cityErrorMsg = document.querySelector('#cityErrorMsg');
   cityErrorMsg.textContent='';
+  const emailErrorMsg = document.querySelector('#emailErrorMsg');
   emailErrorMsg.textContent='';
+
   // Vérification des valeurs des champs //
-  //Prénom//
+
+  //Prénom// 
   if (contact.firstName === '') {
-    const firstNameErrorMsg = document.querySelector('#firstNameErrorMsg');  
+    // Init contenu champ - message d'erreur prénom - dans HTML // 
     firstNameErrorMsg.textContent = 'Veuillez saisir votre prénom.';
     error.push("prénom");
-  }else if (!isValidName(contact.firstName)) {
+  } else if (!isValidName(contact.firstName)) {
+    // Init contenu champ - message d'erreur prénom -  dans HTML //
     firstNameErrorMsg.textContent = 'Veuillez saisir un prénom valide.';
     error.push("prénom")
   }
-  //Nom//  
+
+  //Nom// 
   if (contact.lastName === '') {
-    const lastNameErrorMsg = document.querySelector('#lastNameErrorMsg');
+    // Init contenu champ - message d'erreur nom - dans HTML //
     lastNameErrorMsg.textContent = 'Veuillez saisir votre nom.';
     error.push("nom");
   }else if (!isValidName(contact.lastName)) {
+    // Init contenu champ - message d'erreur nom - dans HTML //
     lastNameErrorMsg.textContent = 'Veuillez saisir un nom valide.';
     error.push("nom"); 
   }
-  //Adresse//
+
+  //Adresse// 
   if (contact.address === '') {
-    const addressErrorMsg = document.querySelector('#addressErrorMsg');
+    // Init contenu champ - message d'erreur adresse postale - dans HTML //
     addressErrorMsg.textContent = 'Veuillez saisir votre adresse.';
     error.push("adresse postale");
   }else if (!isValidAddress(contact.address)) {
+    // Init contenu champ - message d'erreur adresse postale - dans HTML //
     addressErrorMsg.textContent = 'Veuillez saisir une adresse valide.';
     error.push("adresse postale"); 
   }
+
   //Ville//
   if (contact.city === '') {
-    const cityErrorMsg = document.querySelector('#cityErrorMsg');
+    // Init contenu champ - message d'erreur ville - dans HTML //
     cityErrorMsg.textContent = 'Veuillez saisir votre ville.';
     error.push("ville");
   } else if (!isValidCity(contact.city)) {
-    const cityErrorMsg = document.querySelector('#cityErrorMsg');
+    // Init contenu champ - message d'erreur ville - dans HTML //
     cityErrorMsg.textContent = 'Veuillez saisir une ville valide.';
     error.push("ville");
   }
+
   //Adresse mail //
   if (contact.email === '') {
-    const emailErrorMsg = document.querySelector('#emailErrorMsg');
+    // Init contenu champ - message d'erreur adresse mail - dans HTML //
     emailErrorMsg.textContent = 'Veuillez saisir votre email.';
     error.push("adresse email");
   } else if (!isValidEmail(contact.email)) {
-    const emailErrorMsg = document.querySelector('#emailErrorMsg');
+    // Init contenu champ - message d'erreur adresse mail - dans HTML //
     emailErrorMsg.textContent = 'Veuillez saisir une adresse email valide.';
     error.push("adresse email");
   }
@@ -99,7 +115,7 @@ function submitForm(cart,form){
     }
     else 
     {
-      alert("Vérifier les quantités, 10 maximum par produit !")
+      alert("Vérifier les quantités, 100 maximum par produit !")
     }
   }
 }
@@ -130,11 +146,11 @@ function isValidCity(city) {
   return cityRegex.test(city);
 }
 
-// Controler la quantité de chaque  produit dans le cart : 10 maximum //
+// Controler la quantité de chaque  produit dans le cart : 100 maximum //
 function errorQtyInCart(cart) {
   let errorQty = false;
   cart.forEach((produit) => {
-      if (produit.quantity >10) {
+      if (produit.quantity >100) {
         errorQty = true ;
         return errorQty;
       }     
@@ -152,7 +168,7 @@ function idInCart(cart) {
   return ids
 }
 
-// Fonction pour poster formulaire de contact et les ids //
+// Fonction pour poster formulaire de contact et les ids avec la methode POST //
 async function sendFormUser(contact, ids) {
   const sendFormData  = {
         contact: contact,

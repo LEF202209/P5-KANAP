@@ -3,15 +3,18 @@ const sectionItems = document.getElementById("items");
 
 getData();
 
-//Connexion à l'API et récupération des données de l'API via fetch
+//Connexion à l'API et récupération des données de l'API via fetch avec la requête GET //
 function getData () {
   const apiUrl = 'http://localhost:3000/api/products';
   fetch(apiUrl)
     .then (function(response){
+      // Récupération des données de l'API dans un fichier.json
       return response.json();   
     })
     .then(function(data) {
+      // Affiche les données de l'API dans la console pour vérification //
       console.log(data);
+      // Appel à la fonction displayItems pour afficher les données dans HTML //
       displayItems(data);
     })
     .catch (function(err){
@@ -23,8 +26,9 @@ function getData () {
 
 function displayItems(sofas) {
   let displayHTML= "";
+  // Boucle pour afficher tous les articles récupérés //
   for (let sofa of sofas) {
-  // Créer le code HTML pour l'affichage de l'article
+    // Créer le code HTML pour l'affichage de l'article
     displayHTML=  `
     <a href="./product.html?id=${sofa._id}">
     <article>
@@ -35,8 +39,7 @@ function displayItems(sofas) {
     </a>
     `;
 
-    // Insérer l'article dans l'élément 'items'
+    // Insérer chaque article dans l'élément 'items'
     sectionItems.innerHTML += displayHTML;
-    // sectionItems.insertAdjacentHTML('beforeend', displayHTML);
   };
 };

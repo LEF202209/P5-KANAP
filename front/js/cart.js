@@ -10,45 +10,46 @@ let cart;
 loadPage();
 
 async function loadPage() {
-    // vérifier si des données ont été trouvées dans le localStorage //
-     //variable panier à l'état de tableau vide //
+    // Variable panier à l'état de tableau vide //
     cart = []
+    // vérifier si des données ont été trouvées dans le localStorage //
     // si panier n'est pas vide //
     if (panierInLocalStorageObj) {
-        // récupération données du stockage local &API pour chargement dans le tableau cart//
+        // Récupération données du stockage local &API pour chargement dans le tableau cart//
         retrieveProducts(panierInLocalStorageObj, cart)
-        // fonction : calcul des cumul quantités et montant //
+        // Appel à la fonction calcul des cumuls quantités et montant //
         updateTotals(cart)
-        // fonction : écoute clic bouton 'commander' //  
+        // Appel à la fonction : écoute clic bouton 'commander' //  
         listenButtonOrder (cart)
     } else {
-        // affichage panier vide sur la page //
+        // Sinon - panier vide & Affichage 'panier vide' sur la page Panier //
         const panierVide = document.createElement("h2")
         panierVide.textContent = "Le panier est vide."
         document.querySelector("#cart__items").appendChild(panierVide) 
-        // fonction : réinitialisation à zéro des totaux quantité et montant //
+        // Appel à la fonction pour recalculer des totaux quantité et montant //
         updateTotals(cart)  
-        // ne pas afficher le formulaire de saisie et le bouton commander //
-         const UserForm = document.querySelector(".cart__order")
+        // Ne pas afficher le formulaire de saisie et le bouton commander //
+        const UserForm = document.querySelector(".cart__order")
         UserForm.setAttribute("style","display:none")
     }   
 }
 
-//récupération des données du localstorage pour insérer dans un tableau 
+// Fonction pour récupérer les données du stockage local pour insérer dans un tableau // 
 async function retrieveProducts(panierInLocalStorageObj, cart) {
-    // Tri des produits par ID
+    // Tri des produits par ID //
     panierInLocalStorageObj.sort(compareById);
+    // Boucle de lecture du contenu du Stockage local //
     for (const itemInLocalStorage of panierInLocalStorageObj) {     
         const data = await
-        // connexion à l'API pour récupérer le catalogue des produits //
+        // Connexion à l'API pour récupérer le catalogue par Produit //
         fetch(`http://localhost:3000/api/products/${itemInLocalStorage.id}`)
         const catalogue = await data.json()
-        //injecte les données du local storage et complète les infos manquantes depuis l'api
-        // priorité aux données de itemDansLocalStorage si pptés en double //
+        // Injecte les données du localStorage et complète les infos manquantes depuis l'API
+        // Priorité aux données de itemDansLocalStorage si pptés en double //
         console.log("Produit  dans le localStorage : ");
         console.log(itemInLocalStorage);
         cart.push({...catalogue,...itemInLocalStorage})
-        // Appel à la fonction pour afficher les produits dans la page //
+        // Appel à la fonction pour afficher les produits dans la page HTML//
         displayItems(itemInLocalStorage ,catalogue)
     }
 }
@@ -64,7 +65,7 @@ function compareById(a, b) {
     return 0;
 }
   
-//Affichage produits sur page html //
+// Fonction pour Afficher les produits du panier sur page html //
 function displayItems(itemInLocalStorage, catalog) { 
     const sectionItem = document.getElementById("cart__items")
     sectionItem.innerHTML +=
@@ -81,38 +82,41 @@ function displayItems(itemInLocalStorage, catalog) {
                 <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                     <p>Qté : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="10" value="${itemInLocalStorage.quantity}" data-color="${itemInLocalStorage.color}" data-id="${itemInLocalStorage.id}">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${itemInLocalStorage.quantity}" data-color="${itemInLocalStorage.color}" data-id="${itemInLocalStorage.id}">
                 </div>
                 <div class="cart__item__content__settings__delete">
                     <p class="deleteItem" data-id="${itemInLocalStorage.id}" data-color="${itemInLocalStorage.color}" >Supprimer </p>
                 </div>
             </div>
         </article > `
+        // Appel à la fonction pour modifier la quantité //
         changeQuantity(cart);
+        // Appel à la fonction pour supprimer un produit //
         deleteProduct(cart);
 }
 
+// Fonction pour modifier la quantité
 function changeQuantity(cart){
     // Ajouter un écouteur d'événement pour chaque champ de quantité dans l'interface utilisateur
     let quantiteFields = document.querySelectorAll('.itemQuantity');
     for (let field of quantiteFields) {
       field.addEventListener('change', onQuantityChange);
     }    
-    // Mettre à jour les totaux après modification quantité
+    // Appel à la fonction pour Mise à jour des totaux //
     updateTotals(cart);
 }
 
-// Fonction pour mettre à jour les totaux à partir des données du panier
+// Fonction pour mettre à jour les totaux à partir des données du panier //
 function updateTotals(cart) {
     // Récupérer les éléments HTML correspondant aux totaux
     let totalQuantityElem = document.getElementById('totalQuantity');
     let totalPriceElem = document.getElementById('totalPrice');
   
-    // Initialiser les totaux de quantité et de prix
+    // Initialiser les totaux de quantité et de prix à 0 //
     let totalQuantity = 0;
     let totalPrice = 0;
   
-    // Parcourir tous les articles dans le panier et mettre à jour les totaux
+    // Parcourir tous les articles dans le panier pour cumuler les montants et les quantités //
     for (let product of cart) {
       totalQuantity += Number(product.quantity);
       totalPrice += product.price * Number(product.quantity);
@@ -123,42 +127,44 @@ function updateTotals(cart) {
     // Arrondir à 2 décimales pour afficher le prix en euros//
     totalPriceElem.textContent = totalPrice.toFixed(2);  
 }
-
   
-// Fonction pour mettre à jour les totaux lorsque la quantité d'un article est modifiée
+// Fonction pour contrôler et mettre à jour la quantité d'un article modifiée //
 function onQuantityChange(event) {
-    // Récupérer l'article correspondant à l'élément HTML qui a déclenché l'événement
+    // Récupérer l'article correspondant à l'élément HTML qui a déclenché l'événement modifié //
     let productId = event.target.dataset.id;
     let productColor = event.target.dataset.color;
     let panier = JSON.parse(localStorage.getItem('panier'));
     let productLocalStorage = panier.find(a => a.id === productId && a.color === productColor);
     let productCart = cart.find(a => a.id === productId && a.color === productColor);
-    // Contrôle quantité //
+    // Récupérer la nouvelle quantité saisie //
     let newQuantity = parseInt(event.target.value);
-    // Vérifier que la quantité est entre 1 et 10 //
-    if (!(newQuantity >= 1 && newQuantity <= 10)) { 
-        alert("La quantité doit être comprise entre 1 et 10, la quantité retenue est : "+productLocalStorage.quantity);
+    // Vérifier que la nouvelle quantité est bien entre 1 et 100 //
+    // Si ce n'est pas le cas
+    if (!(newQuantity >= 1 && newQuantity <= 100)) { 
+        alert("La quantité doit être comprise entre 1 et 100, la quantité retenue est : "+productLocalStorage.quantity);
         // Réinitialiser la valeur de l'input à la valeur actuelle dans le panier //
         event.target.value = productLocalStorage.quantity;
     } 
-    else 
+    else
+    // Si la nouvelle quantité saisie est valide // 
     {
         // Mettre à jour la quantité de l'article dans le stockage local //
         if (productLocalStorage){
-            // Vérifier que la quantité est entre 1 et 10 //
-                productLocalStorage.quantity = newQuantity;
-                // Sauvegarder les données mises à jour dans le localstorage //
-                localStorage.setItem('panier', JSON.stringify(panier));
+            // Vérifier que la quantité est entre 1 et 100 //
+            productLocalStorage.quantity = newQuantity;
+            // Sauvegarder les données mises à jour dans le localstorage //
+            localStorage.setItem('panier', JSON.stringify(panier));
         }  
         // Mettre à jour l'élément du tableau cart //
         if (productCart){
             productCart.quantity= newQuantity;
         }
-        // Mettre à jour les totaux // 
+        // Appel à la focntion updateTotals pour Mettre à jour les totaux // 
         updateTotals(cart);
     }
 }
 
+// Fonction écouter l'évènement 'supprimer un article du panier' //
 function deleteProduct(cart){
     //Récupération de tous les boutons 'Supprimer'
     const deleteBtns = document.querySelectorAll('.deleteItem');
@@ -170,6 +176,7 @@ function deleteProduct(cart){
     })
 }
 
+// Fonction supprimer un article du panier //
 function trtDeleteProduct (event) {
     // Récupération de l'id & de la couleur de l'article à "Supprimer"
     const idToDelete = event.target.dataset.id;
@@ -189,14 +196,14 @@ function trtDeleteProduct (event) {
     }
     // Récupération de l'élément HTML à supprimer //
     const cartItem = document.querySelector(`[data-id="${idToDelete}"][data-color="${colorToDelete }"]`);  
-    // Suppression de l'article dans le HTML
+    // Suppression de l'article de la page HTML //
     cartItem.closest('.cart__item').remove();
     alert("Article supprimé du panier");
-    //si panier vide, effacement du local storage et rafraichissement de la page
+    // Si panier vide, effacement du local storage et rafraichissement de la page HTML //
     if (cart.length === 0) {
         localStorage.clear()
         location.reload()
     }
-    // Mettre à jour les totaux
+    // Appel à la fonction pour Mettre à jour les totaux // 
     updateTotals(cart);     
 }

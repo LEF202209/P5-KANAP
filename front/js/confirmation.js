@@ -1,13 +1,12 @@
 const orderId = getOrderId();
-console.log(orderId);
-console.log(typeof orderId);
+console.log("No commande récupéré "+ orderId);
 
 if (orderId === "undefined") {
     // Affichage commande non validée //
     // Obtenir la balise p en utilisant son ID //
     const confirmation = document.querySelector('#orderId').parentNode;
     // Modifiez le contenu de la balise p en utilisant innerHTML //
-    confirmation.innerHTML = "<strong> Votre commande n'est pas validée   !!!</strong>";      
+    confirmation.innerHTML = "<strong> Une erreur est survenue, votre commande n'est pas validée   !!!</strong>";      
 } 
 else {
     // Affichage No de commande //
@@ -33,6 +32,8 @@ function getOrderId(){
 // Fonction pour supprimer le param "orderId" de l'URL actuelle
 function  clearUrlSearchParams(urlParams){
     urlParams.delete("orderId"); 
+    // Pour verification valeur du param "orderId" de l'URL actuelle après suppression // 
+    // Affichage de la valeur dans la console // 
     console.log("No cde après delete ="+urlParams.get('orderId'))
 }
 
