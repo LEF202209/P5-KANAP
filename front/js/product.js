@@ -1,10 +1,10 @@
 // On importe la fonction addProduct du code js addProductLocalStorage //
 import { addProduct } from './addProductLocalStorage.js';
 
-// Obtenir les paramètres d'URL de la page actuelle//
+// Obtenir les paramètres d'URL de la page actuelle (Produit) //
 const urlSearchParams = new URLSearchParams(location.search);
 
-// Extraire la veleur de l'Id  avec le paramètre 'id' contenu dans l'url //
+// Extraire la valeur de l'Id  avec le paramètre 'id' contenu dans l'URL //
 const productId = urlSearchParams.get('id');
 
 // Si le paramètre 'id' n'est pas null, alors on va récupérer les données de l'API //
@@ -19,7 +19,7 @@ else {
 
 // Fonction pour Récupérer les données de l'API  avec le paramètre {product-ID}//
 function fetchDataProduct(idProduct){
-  // Connexion à l'API avec l'url personnalisée contenant l'id du produit choisi//
+  // Connexion à l'API avec l'url personnalisée contenant l'id du produit sélectionné//
   // Avec la Requête get // 
   fetch(`http://localhost:3000/api/products/${idProduct}`)
   .then(response => {return response.json()})
@@ -73,7 +73,7 @@ function displayHTML (product){
   listenButtonAdd(product,select)
 };
 
-// Fonction pour Récupérer les options de select //
+// Fonction pour Récupérer les options de select (les couleurs) //
 function selectColorsList(sofa,select){
   // Boucle de lecture et récupération des couleurs //
   if (sofa.colors && sofa.colors.length > 0) {
@@ -113,17 +113,17 @@ function listenButtonAdd(sofa,select) {
     }
     else
     {
-      // Création de l’objet du nouveau produit avec couleur et qté entregistrés sans le prix // 
+      // Création de l’objet du nouveau produit avec son Id, sa couleur & qté entregistrés sans le prix // 
       const newProduct = {
         id: productId,
         name: sofa.name,
         color: colorValue,
         quantity: quantityValue
       }
-      // Appel à la fonction permettant d'ajouter l'objet product // 
-      //(canapé selectionné + couleur + quantité dans le localStorage et dans le panier)//
+      // Appel à la fonction permettant d'ajouter le nouveau produit dans le localStorage // 
+      //(canapé selectionné+ nom + couleur + quantité dans le localStorage dans le panier)//
       addProduct (newProduct);
-      // charger une nouvelle page 'Panier' dans la fenêtre courante 
+      // Redirection vers la page 'Panier' // 
       location.href ='cart.html'
       //ouvrir la page cart.html dans une nouvelle fenêtre du navigateur 
       //window.open("cart.html", "_blank");

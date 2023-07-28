@@ -1,6 +1,5 @@
 
 const sectionItems = document.getElementById("items");
-
 getData();
 
 //Connexion à l'API et récupération des données de l'API via fetch avec la requête GET //
@@ -17,18 +16,19 @@ function getData () {
       // Appel à la fonction displayItems pour afficher les données dans HTML //
       displayItems(data);
     })
+    // Gestion des erreurs //
     .catch (function(err){
       err='Catalogue actuellement inaccessible, merci de revenir plus tard.';
       alert(err);
     });
 };
 
-
+// Fonction displayItems pour afficher les données dans HTML //
 function displayItems(sofas) {
   let displayHTML= "";
   // Boucle pour afficher tous les articles récupérés //
   for (let sofa of sofas) {
-    // Créer le code HTML pour l'affichage de l'article
+    // Créer le code HTML pour l'affichage de l'article //
     displayHTML=  `
     <a href="./product.html?id=${sofa._id}">
     <article>

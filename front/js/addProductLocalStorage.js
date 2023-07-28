@@ -1,17 +1,20 @@
 export {addProduct}
 
+// Fonction addProduct pour ajouter le nv produit selectionné dans le localStorage //
 function addProduct(newProduct) {
-  // récupèration de la valeur associée à la clé "panier" dans l'objet localStorage
+  // Récupèration des données associées à la clé "panier" dans l'objet localStorage //
+  // La chaîne JSON est ensuite convertie en un objet javascript par JSON.parse()
   let panier = JSON.parse(localStorage.getItem('panier'))
   // si le panier n'est pas vide //
   if  (panier != null) {
     let productFind = false;
     for (let i = 0; i < panier.length; i++) {
-      // Si produit trouvé ds le panier=>même Id&color=>maj cumul anciene qté avec qté saisie //
+      // Si produit trouvé ds le panier=>même Id&color=>maj cumul ancienne qté avec qté saisie //
       if (panier[i].id === newProduct.id && panier[i].color === newProduct.color) {
         panier[i].quantity = parseInt(panier[i].quantity) + parseInt(newProduct.quantity);
         productFind = true;
-        // Maj stockage local //
+        // Conversion Objet js panier en une chaîne de caractères JSON par la méthode JSON.stringify()//
+        // Stockage  chaîne de caractères JSON dans l'objet localStorage
         localStorage.setItem('panier', JSON.stringify(panier));
         alert(`L'ajout de ${newProduct.quantity} canapé(s) supplémentaire(s) a été pris en compte pour le modèle :  ${newProduct.name} de couleur ${newProduct.color}`);
         break;
