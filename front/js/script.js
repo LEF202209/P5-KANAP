@@ -3,7 +3,7 @@ const sectionItems = document.getElementById("items");
 getData();
 
 //Connexion à l'API et récupération des données de l'API via fetch avec la requête GET //
-function getData () {
+async function getData () {
   const apiUrl = 'http://localhost:3000/api/products';
   fetch(apiUrl)
     .then (function(response){
