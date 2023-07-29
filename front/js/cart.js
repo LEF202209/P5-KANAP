@@ -158,12 +158,12 @@ function deleteProduct(cart){
     // deleteElt contient la ligne HTML à supprimer //
     deleteBtns.forEach(function(deleteElt) {
     // Ajout d'un écouteur d'évènements au clic sur chaque bouton
-    deleteElt.addEventListener('click', onProductDelete);
+    deleteElt.addEventListener('click', onProductToBeDeleted);
     })
 }
 
-// Fonction supprimer un article du localStorage et du panier //
-function onProductDelete (event) {
+// Fonction pour supprimer un article du localStorage et du panier //
+function onProductToBeDeleted (event) {
     // Récupération de l'id & de la couleur de l'article à "Supprimer"
     const idToDelete = event.target.dataset.id;
     const colorToDelete = event.target.dataset.color;
