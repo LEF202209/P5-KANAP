@@ -38,9 +38,9 @@ function submitForm(cart, form) {
   // Si pas d'erreur formulaire
   else
   {
-    // Appel à la focntion errorQtyInCart pour contrôler les quantités produits ds cart //
+    // Appel à la focntion checkErrorQtyInCart pour contrôler les quantités produits ds cart //
     // Page panier
-    const errorQty = errorQtyInCart(cart); 
+    const errorQty = checkErrorQtyInCart(cart); 
     // Si tout est correct et pas d'erreur de quantité, soumettre le formulaire //
     if (errorQty===false) {
       console.log("envoi serveur");
@@ -95,7 +95,7 @@ function isValidEmail(email) {
 }
 
 // Controler la quantité de chaque  produit dans le cart : 100 maximum //
-function errorQtyInCart(cart) {
+function checkErrorQtyInCart(cart) {
   let errorQty = false;
   cart.forEach((produit) => {
       if (produit.quantity >100) {
